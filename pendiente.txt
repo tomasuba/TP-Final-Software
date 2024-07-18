@@ -1,0 +1,1 @@
+post dragon -> agregar codigo de respuesta cuando el tipo no existe
