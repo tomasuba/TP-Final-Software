@@ -11,6 +11,7 @@ class TiposDragon(db.Model):
     __tablename__ = 'tipos_dragon'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255), nullable=False)
+    precio = db.Column(db.Integer, nullable=False)
 
 class Dragones(db.Model):
     __tablename__ = 'dragones'
@@ -20,6 +21,7 @@ class Dragones(db.Model):
     nombre = db.Column(db.String(255), nullable=False)
     salud = db.Column(db.Integer, nullable=False, default=100)
     hambre = db.Column(db.Integer, nullable=False, default=100)
+    ultima_actualizacion = db.Column(db.DateTime, nullable=False)
 
 class TiposGranja(db.Model):
     __tablename__ = 'tipos_granja'
