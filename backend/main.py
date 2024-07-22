@@ -15,17 +15,27 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 def actualizar():
     try:
         with app.app_context():
-            dragones = db.session.query(Dragones).all()
+            dragones = db.session.query(Dragones).where(Dragones.salud > 0).all()
             for dragon in dragones:
+
                 tiempo_desde_actualizacion = datetime.datetime.now() - dragon.ultima_actualizacion
-                minutos_desde_actualizacion = tiempo_desde_actualizacion.seconds//60
-                print(tiempo_desde_actualizacion)
-                if minutos_desde_actualizacion > 0:
-                    if dragon.hambre > 0:
-                        dragon.hambre -= minutos_desde_actualizacion
-                    else:
-                        dragon.salud -= minutos_desde_actualizacion
-                    dragon.ultima_actualizacion += datetime.timedelta(minutes=minutos_desde_actualizacion)
+                minutos_desde_actualizacion = tiempo_desde_actualizacion.total_seconds()//60
+
+                if minutos_desde_actualizacion <= 0:
+                    pass
+
+                comida_a_restar = minutos_desde_actualizacion
+                
+                if comida_a_restar > dragon.hambre:
+                    comida_a_restar -= dragon.hambre
+                    dragon.hambre = 0
+                elif dragon.hambre > 0:
+                    dragon.hambre -= comida_a_restar
+                    comida_a_restar = 0
+
+                dragon.salud -= comida_a_restar
+                dragon.ultima_actualizacion += datetime.timedelta(minutes=minutos_desde_actualizacion)
+
             db.session.commit()
 
     except Exception as error:
