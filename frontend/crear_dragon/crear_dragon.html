@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragones y Camejos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        img {
+            background-color: dimgray;
+            aspect-ratio: 3/4;
+        }
+        .slider {
+      width: 90%; 
+    }
+    </style>
+</head>
+
+<body data-bs-theme="dark">
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12 col-md-10 col-lg-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Crear Nuevo Dragon</h2>
+                        <form onsubmit="create_character(event)">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Cangrejo"
+                                    required>
+                            </div>
+
+                            <label class="mb-3 me-3">Tipo de dragon: </label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" value="fuego" type="radio" name="tipo"
+                                    id="tipo-fuego" required>
+                                <label class="form-check-label" for="tipo-fuego">
+                                    fuego
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" value="agua" type="radio" name="tipo"
+                                    id="tipo-agua" required>
+                                <label class="form-check-label" for="tipo-agua">
+                                    Agua
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" value="aire" type="radio" name="tipo"
+                                    id="tipo-aire" required>
+                                <label class="form-check-label" for="tipo-aire">
+                                    Aire
+                                </label>
+                            </div>
+
+                            <div>
+                                <label for="slider">Energia:</label>
+                                <input type="range" id="slider" name="slider" min="0" max="100" value="1" class="slider">
+                                <span id="sliderValue"></span>
+                            </div>
+
+                            <label for="gender mb-1">Genero</label>
+                            <select class="form-select mb-3" id="genero" name="genero" required>
+                                <option value="male">Hombre</option>
+                                <option value="female">Mujer</option>
+                                <option value="other">Otro</option>
+                            </select>
+
+                            <div class="mb-3">
+                                <label for="imagen" class="form-label">Imagen</label>
+                                <input type="text" class="form-control" name="imagen" placeholder="Ingrese link" id="imagen" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Crear</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous">
+    </script>
+    
+    <script> slider.addEventListener("input", function() {
+        sliderValue.textContent = slider.value;
+        });
+    </script>
+    
+    <script>
+        function handle_response(data) {
+            if (data.success) {
+                window.location.href = `/dragones?id=${data.id}`
+            } else {
+                alert("Error")
+            }
+        }
+
+        function create_character(event) {
+            event.preventDefault()
+
+            const formData = new FormData(event.target)
+
+            const nombre = formData.get("nombre")
+            const tipo = formData.get("tipo")
+            const energia = formData.get("energia")
+            const genero = formData.get("genero")
+            const imagen = formData.get("imagen")
+
+
+            fetch("@ocalhost:5432/dragon_db", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nombre: nombre,
+                    tipo: tipo,
+                    energia: energia,
+                    genero: genero,
+                    imagen: imagen,
+                })
+            })
+                .then((res) => res.json())
+                .then(handle_response)
+                .catch((error) => console.log("ERROR", error))
+        }
+    </script>
+</body>
+
+</html>
