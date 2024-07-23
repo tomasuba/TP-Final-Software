@@ -12,6 +12,10 @@
             background-color: dimgray;
             aspect-ratio: 3/4;
         }
+        #inlineFormCustomSelect {
+            width: 50%;
+            max-width: 400px; 
+        }
     </style>
 </head>
 
@@ -22,31 +26,33 @@
                 <div class="card">
                     <div class="card-body">
                         <h2 class="card-title">Crear Nueva Granja</h2>
+                        <div class="my-4"></div>
                         <form onsubmit="crear_granja(event)">
-                            <label class="mb-3 me-3">Tipo de Granja: </label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" value="fuego" type="radio" name="tipo"
-                                    id="tipo-fuego" required>
-                                <label class="form-check-label" for="tipo-fuego">
-                                    fuego
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" value="agua" type="radio" name="tipo"
-                                    id="tipo-agua" required>
-                                <label class="form-check-label" for="tipo-agua">
-                                    Agua
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" value="aire" type="radio" name="tipo"
-                                    id="tipo-aire" required>
-                                <label class="form-check-label" for="tipo-aire">
-                                    Aire
-                                </label>
-                            </div>
-                            <button type="submit" class="btn btn-success">Crear</button>
-                        </form>
+                            <form>
+                                <div class="form-row align-items-center">
+                                  <div class="col-auto my-1">
+                                    <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Tipo de Granja</label>
+                                    <select class="custom-select mr-sm-2 mx-auto" id="inlineFormCustomSelect" required>
+                                      <option selected></option>
+                                      <option value="1">One</option>
+                                      <option value="2">Two</option>
+                                      <option value="3">Three</option>
+                                    </select>
+                                    <div class="my-4"></div>
+                                  </div>
+                                   
+                                  <div class="col-auto my-1">
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                      <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
+                                      <label class="custom-control-label" for="customControlAutosizing">Recordar para la proxima granja</label>
+                                    </div>
+                                  </div>
+                                  <div class="my-4"></div>
+                                  <div class="col-auto my-1">
+                                    <button type="submit" class="btn btn-success">Crear Granja</button>
+                                  </div>
+                                </div>
+                            </form>
                     </div>
                 </div>
             </div>
