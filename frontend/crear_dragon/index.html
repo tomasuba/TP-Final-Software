@@ -85,11 +85,66 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous">
     </script>
-    
     <script> slider.addEventListener("input", function() {
         sliderValue.textContent = slider.value;
         });
     </script>
+
+
+    <script>
+        function response_received(response) {
+            return response.json();
+        }
+        function request_error(error) {
+            console.log("ERROR");
+            console.log(error);
+        }
+    </script>
+
+    <script>
+
+        function seleccionar_tipo(id) {
+            let nombre = document.getElementById('name').value;
+            console.log(id, nombre);
+            /*
+            fetch(`http://192.168.1.62:5000/nuevo_dragon?id=${id}&nombre=${nombre}`)
+                .then(response_received)
+                .then()
+                .catch(request_error)
+            */
+        }
+    </script>
+
+    <script>
+        function parse_data(content) {
+            tipos_dragon = content['tipos_dragon'];
+
+            tipos_dragon.forEach(tipo_dragon => {
+                let button_tipo_dragon = document.createElement("button");
+                button_tipo_dragon.setAttribute("onclick", `seleccionar_tipo(${tipo_dragon['id']})`)
+
+                let p_nombre = document.createElement("p");
+                p_nombre.innerText = tipo_dragon['nombre']
+                let p_precio = document.createElement("p");
+                p_precio.innerText = tipo_dragon['precio']
+
+                button_tipo_dragon.appendChild(p_nombre);
+                button_tipo_dragon.appendChild(p_precio);
+
+                document.body.appendChild(button_tipo_dragon)
+
+                console.log(tipo_dragon)
+            });
+        }
+
+        fetch("http://192.168.1.62:5000/tipos_dragon")
+            .then(response_received)
+            .then(parse_data)
+            .catch(request_error)
+
+    </script>
+
+
     
     <script>
         function handle_response(data) {
@@ -112,7 +167,7 @@
             const imagen = formData.get("imagen")
 
 
-            fetch("@ocalhost:5432/dragon_db", {
+            fetch("@localhost:5432/dragon_db", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
