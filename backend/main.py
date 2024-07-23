@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from models import db, Dragones, TiposDragon, Granjas, TiposGranja, Almacen
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
@@ -8,6 +9,7 @@ USUARIO = 'tomascrojo'
 PASSWORD = '15012004'
 
 app = Flask(__name__)
+CORS(app)
 puerto = 5000
 app.config['SQLALCHEMY_DATABASE_URI']= f'postgresql+psycopg2://{USUARIO}:{PASSWORD}@localhost:5432/dragon_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
