@@ -26,12 +26,13 @@
                     <div class="card-body">
                         <h2 class="card-title">Crear Nuevo Dragon</h2>
                         <form onsubmit="crear_dragon(event)">
+                            <div class="my-4"></div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nombre</label>
                                 <input type="text" class="form-control" id="name" name="name" placeholder="Cangrejo"
                                     required>
                             </div>
-
+                            <div class="my-4"></div>
                             <label class="mb-3 me-3">Tipo de dragon: </label>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" value="fuego" type="radio" name="tipo"
@@ -54,25 +55,25 @@
                                     Aire
                                 </label>
                             </div>
-
+                            <div class="my-4"></div>
                             <div>
                                 <label for="slider">Energia:</label>
                                 <input type="range" id="slider" name="slider" min="0" max="100" value="1" class="slider">
                                 <span id="sliderValue"></span>
                             </div>
-
+                            <div class="my-4"></div>
                             <label for="gender mb-1">Genero</label>
                             <select class="form-select mb-3" id="genero" name="genero" required>
                                 <option value="male">Hombre</option>
                                 <option value="female">Mujer</option>
                                 <option value="other">Otro</option>
                             </select>
-
+                            <div class="my-4"></div>
                             <div class="mb-3">
                                 <label for="imagen" class="form-label">Imagen</label>
                                 <input type="text" class="form-control" name="imagen" placeholder="Ingrese link" id="imagen" required>
                             </div>
-
+                            <div class="my-4"></div>
                             <button type="submit" class="btn btn-success">Crear</button>
                         </form>
                     </div>
