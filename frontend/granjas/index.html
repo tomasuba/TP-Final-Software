@@ -23,37 +23,6 @@
 
     <div class="container text-center">
         <div class="row row-cols-auto" id="granjas">
-            <div class="col">
-                <div class="row">
-                    <div class="col">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWPCeYcdZcUkKdD5ol0RkpveR9MavqrYLunA&s" class="img-thumbnail" alt="...">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <img src="../assets/potato.png" class="img" alt="..." style="height: 5em;">
-                    </div>
-                    <div class="col">
-                        <a href="crear_granja/" class="btn btn-success d-block m-1 p-3">Cosechar<br>+10</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="row">
-                    <div class="col">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWPCeYcdZcUkKdD5ol0RkpveR9MavqrYLunA&s" class="img-thumbnail" alt="...">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <img src="../assets/potato.png" class="img" alt="..." style="height: 5em;">
-                    </div>
-                    <div class="col">
-                        <a href="crear_granja/" class="btn btn-success d-block m-1 p-3">Cosechar<br>+10</a>
-                    </div>
-                </div>
-            </div>
           
         </div>
     </div>
@@ -69,20 +38,40 @@
             console.log("ERROR");
             console.log(error);
         }
-    
-    
+
+        function granja_cosechada(content){
+            console.log(content);
+            let granja = content['granja']
+            console.log(granja['id']);
+            actualizar_comida();
+            document.getElementById(granja['id']).remove();
+        }
+
+        function cosechar(id) {
+            console.log(id);
+            fetch(`${URL_API}/cosechar/${id}`, {method: "POST"})
+                .then(response_received)
+                .then(granja_cosechada)
+                .catch(request_error)
+        }
+
         function cargar_granjas(content) {
             granjas = content['granjas'];
     
             let div_granjas = document.getElementById("granjas");
     
             granjas.forEach(granja => {
-                let texto_btn = "Cosechar\n+10";
+                if (granja['cosechada'] == true) {
+                    return true;
+                }
+
+                let texto_btn = `Cosechar\n+${granja['recompensa']}`;
                 let imagen_info = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWPCeYcdZcUkKdD5ol0RkpveR9MavqrYLunA&s";
-                let imagen_granja = "../assets/potato.png"
+                let imagen_granja = `../assets/${granja['tipo_granja']}.png`
 
                 let div_granja = document.createElement("div");
                 div_granja.setAttribute("class", "col");
+                div_granja.setAttribute("id", granja['id'])
                 let div_col = document.createElement("div");
                 div_col.setAttribute("class", "col");
 
@@ -112,16 +101,14 @@
                 div_col_info_img.append(img_info);
                 div_row_info.append(div_col_info_img)
 
-                let btn_info = document.createElement("a");
+                let btn_info = document.createElement("btn");
                 btn_info.setAttribute("class", "btn btn-success d-block m-1 p-3");
+                btn_info.setAttribute("onclick", `cosechar(${granja['id']})`)
                 btn_info.innerText = texto_btn;
                 div_col_info_btn.append(btn_info);
                 div_row_info.append(div_col_info_btn);
 
                 div_granja.appendChild(div_row_info);
-
-                div_granja.id = granja['id'];
-                //div_granja.innerText = `tipo: ${granja['tipo_granja']} | ${granja['fecha_cosecha']} | cosechada: ${granja['cosechada']}`;
                 div_granjas.appendChild(div_granja);
         });
         }

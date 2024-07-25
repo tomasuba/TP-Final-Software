@@ -145,7 +145,8 @@ def get_granjas():
                 'tipo_granja': tipo_granja.nombre,
                 'fecha_creacion': granja.fecha_creacion,
                 'fecha_cosecha': granja.fecha_cosecha,
-                'cosechada': granja.cosechada
+                'cosechada': granja.cosechada,
+                'recompensa': tipo_granja.recompensa
             }
             granjas_data.append(granja_data)
         return jsonify({'granjas':granjas_data})
