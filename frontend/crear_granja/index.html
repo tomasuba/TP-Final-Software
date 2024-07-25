@@ -21,42 +21,44 @@
 
 <body data-bs-theme="dark">
   <div class="container my-4">
-      <div class="row">
-          <div class="col-12 col-md-10 col-lg-6 mx-auto">
-              <div class="card">
-                  <div class="card-body">
-                      <h2 class="card-title">Crear Nueva Granja</h2>
-                      <div class="my-4"></div>
-                      <form onsubmit="crear_granja(event)">
-                          <form>
-                              <div class="form-row align-items-center">
-                                <div class="col-auto my-1">
-                                  <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Tipo de Granja</label>
-                                  <select class="custom-select mr-sm-2 mx-auto" id="inlineFormCustomSelect" required>
-                                    <option selected></option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                  </select>
-                                  <div class="my-4"></div>
-                                </div>
-                                  
-                                <div class="col-auto my-1">
-                                  <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
-                                    <label class="custom-control-label" for="customControlAutosizing">Recordar para la proxima granja</label>
-                                  </div>
-                                </div>
-                                <div class="my-4"></div>
-                                <div class="col-auto my-1">
-                                  <button type="submit" class="btn btn-success">Crear Granja</button>
-                                </div>
-                              </div>
-                          </form>
+    <div class="row">
+      <div class="col-12 col-md-10 col-lg-6 mx-auto">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Crear Nueva Granja</h2>
+
+            <h5 id="tu_comida">Tu comida: </h5>
+
+            <div class="my-4"></div>
+            <form onsubmit="crear_granja(event)">
+              <div class="form-row align-items-center">
+
+                <div class="col-auto my-1">
+                  <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Tipo de Granja</label>
+                  <select class="custom-select mr-sm-2 mx-auto" id="inlineFormCustomSelect" required>
+                    <option selected></option>
+                  </select>
+                  <div class="my-4"></div>
+                </div>
+                    
+                <div class="col-auto my-1">
+                  <div class="custom-control custom-checkbox mr-sm-2">
+                    <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
+                    <label class="custom-control-label" for="customControlAutosizing">Recordar para la proxima granja</label>
                   </div>
+                </div>
+
+                <div class="my-4"></div>
+                <div class="col-auto my-1">
+                  <button type="submit" class="btn btn-success">Crear Granja</button>
+                </div>
+                
               </div>
+            </form>
           </div>
+        </div>
       </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -65,92 +67,68 @@
   </script>
 
   <script>
+
+    const URL_API = "http://192.168.0.243:5000"
+
     function response_received(response) {
-        return response.json();
+      return response.json();
     }
     function request_error(error) {
-        console.log("ERROR");
-        console.log(error);
+      console.log("ERROR");
+      console.log(error);
     }
-  </script>
-
-  <script>
-
-    function seleccionar_tipo(id) {
-        let nombre = document.getElementById('name').value;
-        console.log(id, nombre);
-        /*
-        fetch(`http://192.168.1.62:5000/nueva_granja?id=${id}&nombre=${nombre}`)
-            .then(response_received)
-            .then()
-            .catch(request_error)
-        */
-    }
-  </script>
-
-  <script>
-    function parse_data(content) {
-        tipos_granja = content['tipos_granja'];
-
-        tipos_granja.forEach(tipo_granja => {
-            let button_tipo_granja = document.createElement("button");
-            button_tipo_granja.setAttribute("onclick", `seleccionar_tipo(${tipo_granja['id']})`)
-
-            let p_nombre = document.createElement("p");
-            p_nombre.innerText = tipo_granja['nombre']
-            let p_precio = document.createElement("p");
-            p_precio.innerText = tipo_granja['precio']
-
-            button_tipo_dragon.appendChild(p_nombre);
-            button_tipo_dragon.appendChild(p_precio);
-
-            document.body.appendChild(button_tipo_granja)
-
-            console.log(tipo_granja)
-        });
+  
+    function granja_creada(content) {
+      //console.log(content)
+      actualizar_comida();
     }
 
-    fetch("http://192.168.1.62:5000/tipos_granja")
+    function cargar_granjas(content) {
+      tipos_granja = content['tipos_granja'];
+
+      let select = document.getElementById("inlineFormCustomSelect");
+
+      tipos_granja.forEach(tipo_granja => {
+        let option = document.createElement("option");
+        option.value = tipo_granja['id'];
+        option.innerText = `${tipo_granja['nombre']} | precio: ${tipo_granja['precio']} | recompensa: ${tipo_granja['recompensa']}`;
+        select.appendChild(option);
+      });
+    }
+
+    function cargar_comida(content) {
+      cantidad_comida = content['comida'];
+      //console.log(content);
+
+      h5_comida = document.getElementById("tu_comida");
+      h5_comida.innerText = `Tu comida: ${cantidad_comida}`;
+    }
+
+    function crear_granja(event) {
+      event.preventDefault();
+      
+      let id = document.getElementById("inlineFormCustomSelect").value;
+      fetch(`${URL_API}/nueva_granja?id_tipo=${id}`, {method: "POST"})
         .then(response_received)
-        .then(parse_data)
+        .then(granja_creada)
         .catch(request_error)
-
-  </script>
-
-  <script>
-    function handle_response(data) {
-        if (data.success) {
-            window.location.href = `/granjas?id=${data.id}`
-        } else {
-            alert("Error")
-        }
     }
 
-    function crear_dragon(event) {
-      event.preventDefault()
-
-      const formData = new FormData(event.target)
-
-      const nombre = formData.get("nombre")
-      const tipo = formData.get("tipo")
-
-      fetch("@localhost:5432/Tiposgranja", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          nombre: nombre,  
-          tipo: tipo,
-        })
-        })
-          .then((res) => res.json())
-          .then(handle_response)
-          .catch((error) => console.log("ERROR", error))
+    function actualizar_comida() {
+      fetch(`${URL_API}/almacen`)
+        .then(response_received)
+        .then(cargar_comida)
+        .catch(request_error)
     }
+
+    fetch(`${URL_API}/tipos_granja`)
+      .then(response_received)
+      .then(cargar_granjas)
+      .catch(request_error)
+
+    actualizar_comida()
+
   </script>
-
-
 </body>
 
 </html>
