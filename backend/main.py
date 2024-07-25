@@ -208,7 +208,7 @@ def add_dragones():
         if not TiposDragon.query.where(TiposDragon.id==id_tipo).first():
             return jsonify({'message': f'Bad request, id_tipo={id_tipo} is not a valid value'}), 400
         
-        tipo_dragon = TiposDragon.query.get(id_tipo)
+        tipo_dragon = db.session.get(TiposDragon, id_tipo)
         almacen = db.session.query(Almacen).first()
 
         if almacen.comida < tipo_dragon.precio:
@@ -276,7 +276,7 @@ def add_granjas():
         if not TiposGranja.query.where(TiposGranja.id==id_tipo).first():
             return jsonify({'message': f'Bad request, id_tipo={id_tipo} is not a valid value'}), 400
         
-        tipo_granja = TiposGranja.query.get(id_tipo)
+        tipo_granja = db.session.get(TiposGranja, id_tipo)
         almacen = db.session.query(Almacen).first()
 
         if almacen.comida < tipo_granja.precio:
