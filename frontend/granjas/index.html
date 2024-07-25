@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragones & Camejos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <img src="../assets/dragon.png" class="rounded float-end" width="50" right="10" alt="No cargo la imagen">
+</head>
+
+<body data-bs-theme="dark">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Dragones & Camejos</h1>
+                <h5 id="tu_comida">Tu comida: </h5>
+                <a href="crear_granja/" class="btn btn-primary d-block mb-3">Crear Granja</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container text-center">
+        <div class="row row-cols-auto" id="granjas">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWPCeYcdZcUkKdD5ol0RkpveR9MavqrYLunA&s" class="img-thumbnail" alt="...">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <img src="../assets/potato.png" class="img" alt="..." style="height: 5em;">
+                    </div>
+                    <div class="col">
+                        <a href="crear_granja/" class="btn btn-success d-block m-1 p-3">Cosechar<br>+10</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWPCeYcdZcUkKdD5ol0RkpveR9MavqrYLunA&s" class="img-thumbnail" alt="...">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <img src="../assets/potato.png" class="img" alt="..." style="height: 5em;">
+                    </div>
+                    <div class="col">
+                        <a href="crear_granja/" class="btn btn-success d-block m-1 p-3">Cosechar<br>+10</a>
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+    </div>
+
+    <script>
+        
+        const URL_API = "http://192.168.0.243:5000"
+    
+        function response_received(response) {
+            return response.json();
+        }
+        function request_error(error) {
+            console.log("ERROR");
+            console.log(error);
+        }
+    
+    
+        function cargar_granjas(content) {
+            granjas = content['granjas'];
+    
+            let div_granjas = document.getElementById("granjas");
+    
+            granjas.forEach(granja => {
+                let texto_btn = "Cosechar\n+10";
+                let imagen_info = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWPCeYcdZcUkKdD5ol0RkpveR9MavqrYLunA&s";
+                let imagen_granja = "../assets/potato.png"
+
+                let div_granja = document.createElement("div");
+                div_granja.setAttribute("class", "col");
+                let div_col = document.createElement("div");
+                div_col.setAttribute("class", "col");
+
+                let div_row_img = document.createElement("div");
+                div_row_img.setAttribute("class", "row");
+                let div_col_img = document.createElement("div");
+                div_col_img.setAttribute("class", "col");
+
+                let div_row_info = document.createElement("div");
+                div_row_info.setAttribute("class", "row");
+                let div_col_info_img = document.createElement("div");
+                div_col_info_img.setAttribute("class", "col");
+                let div_col_info_btn = document.createElement("div");
+                div_col_info_btn.setAttribute("class", "col");
+
+                let img = document.createElement("img");
+                img.setAttribute("src", imagen_info);
+                img.setAttribute("class", "img-thumbnail");
+                div_col_img.appendChild(img);
+                div_row_img.appendChild(div_col_img);
+                div_granja.appendChild(div_row_img);
+
+                let img_info = document.createElement("img");
+                img_info.setAttribute("src", imagen_granja);
+                img_info.setAttribute("class", "img");
+                img_info.setAttribute("style", "height: 5em;");
+                div_col_info_img.append(img_info);
+                div_row_info.append(div_col_info_img)
+
+                let btn_info = document.createElement("a");
+                btn_info.setAttribute("class", "btn btn-success d-block m-1 p-3");
+                btn_info.innerText = texto_btn;
+                div_col_info_btn.append(btn_info);
+                div_row_info.append(div_col_info_btn);
+
+                div_granja.appendChild(div_row_info);
+
+                div_granja.id = granja['id'];
+                //div_granja.innerText = `tipo: ${granja['tipo_granja']} | ${granja['fecha_cosecha']} | cosechada: ${granja['cosechada']}`;
+                div_granjas.appendChild(div_granja);
+        });
+        }
+    
+        function cargar_comida(content) {
+            cantidad_comida = content['comida'];
+    
+            h5_comida = document.getElementById("tu_comida");
+            h5_comida.innerText = `Tu comida: ${cantidad_comida}`;
+        }
+    
+        function actualizar_comida() {
+            fetch(`${URL_API}/almacen`)
+                .then(response_received)
+                .then(cargar_comida)
+                .catch(request_error)
+        }
+    
+        fetch(`${URL_API}/granjas`)
+            .then(response_received)
+            .then(cargar_granjas)
+            .catch(request_error)
+    
+        actualizar_comida()
+    
+    </script>
+</body>
+
+</html>

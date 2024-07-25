@@ -15,8 +15,9 @@
         <div class="row">
             <div class="col">
                 <h1>Dragones & Camejos</h1>
-                <a href="/crear_dragon/" class="btn btn-primary d-block mb-3">Crear Dragon</a>
-                <a href="/crear_granja/" class="btn btn-primary d-block mb-3">Crear Granja</a>
+                <h5 id="tu_comida">Tu comida: </h5>
+                <a href="dragones/" class="btn btn-primary d-block mb-3">Dragones</a>
+                <a href="granjas/" class="btn btn-primary d-block mb-3">Granjas</a>
             </div>
         </div>
     </div>
@@ -25,53 +26,6 @@
         <div class="row g-4" id="dragones">
         </div>
     </div>
-
-    <script>
-        function response_received(data) {
-            console.log("SUCCESS")
-            console.log(data);
-
-            return data.json()
-        }
-
-        function request_error(error) {
-            console.log("ERROR")
-            console.log(error);
-        }
-
-        function parse_data(content){
-            console.log("TENGO LA LISTA")
-            console.log(content)
-            const container = document.getElementById("dragones");
-            for (let index = 0; index < content.length; index++) {
-                const item = document.createElement("div");
-                item.setAttribute("class", "col-6 col-md-4 col-lg-3 col-xl-2");
-
-                const card = document.createElement("a");
-                card.setAttribute("class", "card text-decoration-none");
-                card.setAttribute("href", `/dragon?id=${content[index].id}`);
-
-                const image = document.createElement("img");
-                image.setAttribute("class", "card-img-top");
-                image.setAttribute("src", content[index].image)
-
-                const card_body = document.createElement("div");
-                card_body.setAttribute("class", "card-body");
-
-                card_body.append(content[index].name);
-                card.append(image);
-                card.append(card_body);
-                item.append(card);
-
-                container.append(item);
-            }
-        }
-
-        fetch("@localhost:5432/dragon_db")
-            .then(response_received)
-            .then(parse_data)
-            .catch(request_error)
-    </script>
 </body>
 
 </html>

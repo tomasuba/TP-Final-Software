@@ -25,6 +25,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h2 class="card-title">Crear Nuevo Dragon</h2>
+                        <h5 id="tu_comida">Tu comida: </h5>
                         <form onsubmit="crear_dragon(event)">
                             <div class="my-4"></div>
                             <div class="mb-3">
@@ -143,48 +144,6 @@
             .then(parse_data)
             .catch(request_error)
 
-    </script>
-
-
-    
-    <script>
-        function handle_response(data) {
-            if (data.success) {
-                window.location.href = `/dragones?id=${data.id}`
-            } else {
-                alert("Error")
-            }
-        }
-
-        function crear_dragon(event) {
-            event.preventDefault()
-
-            const formData = new FormData(event.target)
-
-            const nombre = formData.get("nombre")
-            const tipo = formData.get("tipo")
-            const energia = formData.get("energia")
-            const genero = formData.get("genero")
-            const imagen = formData.get("imagen")
-
-
-            fetch("@localhost:5432/dragon_db", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    nombre: nombre,
-                    tipo: tipo,
-                    energia: energia,
-                    genero: genero,
-                    imagen: imagen,
-                })
-            })
-                .then((res) => res.json())
-                .then(handle_response)
-                .catch((error) => console.log("ERROR", error))
-        }
     </script>
 </body>
 
