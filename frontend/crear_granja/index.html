@@ -125,6 +125,29 @@
             alert("Error")
         }
     }
+
+    function crear_dragon(event) {
+      event.preventDefault()
+
+      const formData = new FormData(event.target)
+
+      const nombre = formData.get("nombre")
+      const tipo = formData.get("tipo")
+
+      fetch("@localhost:5432/Tiposgranja", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nombre: nombre,  
+          tipo: tipo,
+        })
+        })
+          .then((res) => res.json())
+          .then(handle_response)
+          .catch((error) => console.log("ERROR", error))
+    }
   </script>
 
 
