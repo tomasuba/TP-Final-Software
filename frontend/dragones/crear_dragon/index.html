@@ -76,6 +76,7 @@
                             </div>
                             <div class="my-4"></div>
                             <button type="submit" class="btn btn-success">Crear</button>
+                            <a class="btn btn-secondary" href="../">Volver</a>
                         </form>
                     </div>
                 </div>
@@ -94,6 +95,9 @@
 
 
     <script>
+
+        const URL_API = "http://192.168.0.243:5000"
+
         function response_received(response) {
             return response.json();
         }
@@ -101,23 +105,12 @@
             console.log("ERROR");
             console.log(error);
         }
-    </script>
-
-    <script>
 
         function seleccionar_tipo(id) {
             let nombre = document.getElementById('name').value;
             console.log(id, nombre);
-            /*
-            fetch(`http://192.168.1.62:5000/nuevo_dragon?id=${id}&nombre=${nombre}`)
-                .then(response_received)
-                .then()
-                .catch(request_error)
-            */
         }
-    </script>
 
-    <script>
         function parse_data(content) {
             tipos_dragon = content['tipos_dragon'];
 
@@ -139,10 +132,26 @@
             });
         }
 
+        function cargar_comida(content) {
+            cantidad_comida = content['comida'];
+    
+            h5_comida = document.getElementById("tu_comida");
+            h5_comida.innerText = `Tu comida: ${cantidad_comida}`;
+        }
+
+        function actualizar_comida() {
+            fetch(`${URL_API}/almacen`)
+                .then(response_received)
+                .then(cargar_comida)
+                .catch(request_error)
+        }
+
         fetch("http://192.168.1.62:5000/tipos_dragon")
             .then(response_received)
             .then(parse_data)
             .catch(request_error)
+
+        actualizar_comida()
 
     </script>
 </body>

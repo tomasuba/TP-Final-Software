@@ -16,7 +16,8 @@
             <div class="col">
                 <h1>Dragones & Camejos</h1>
                 <h5 id="tu_comida">Tu comida: </h5>
-                <a href="crear_granja/" class="btn btn-primary d-block mb-3">Crear Granja</a>
+                <a href="crear_granja/" class="btn btn-primary mb-3" style="width: 70%;">Crear Granja</a>
+                <a class="btn btn-secondary mb-3" href="../" style="width: 29%;">Volver</a>
             </div>
         </div>
     </div>
@@ -66,8 +67,8 @@
                 }
 
                 let texto_btn = `Cosechar\n+${granja['recompensa']}`;
-                let imagen_info = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWPCeYcdZcUkKdD5ol0RkpveR9MavqrYLunA&s";
-                let imagen_granja = `../assets/${granja['tipo_granja']}.png`
+                let imagen_granja = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWPCeYcdZcUkKdD5ol0RkpveR9MavqrYLunA&s";
+                let imagen_info = `../assets/${granja['tipo_granja']}.png`
 
                 let div_granja = document.createElement("div");
                 div_granja.setAttribute("class", "col");
@@ -88,14 +89,15 @@
                 div_col_info_btn.setAttribute("class", "col");
 
                 let img = document.createElement("img");
-                img.setAttribute("src", imagen_info);
+                img.setAttribute("src", imagen_granja);
                 img.setAttribute("class", "img-thumbnail");
+                img.setAttribute("style", "height:200px");
                 div_col_img.appendChild(img);
                 div_row_img.appendChild(div_col_img);
                 div_granja.appendChild(div_row_img);
 
                 let img_info = document.createElement("img");
-                img_info.setAttribute("src", imagen_granja);
+                img_info.setAttribute("src", imagen_info);
                 img_info.setAttribute("class", "img");
                 img_info.setAttribute("style", "height: 5em;");
                 div_col_info_img.append(img_info);
