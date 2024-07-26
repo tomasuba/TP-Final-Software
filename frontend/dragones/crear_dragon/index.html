@@ -34,27 +34,10 @@
                                     required>
                             </div>
                             <div class="my-4"></div>
-                            <label class="mb-3 me-3">Tipo de dragon: </label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" value="fuego" type="radio" name="tipo"
-                                    id="tipo-fuego" required>
-                                <label class="form-check-label" for="tipo-fuego">
-                                    fuego
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" value="agua" type="radio" name="tipo"
-                                    id="tipo-agua" required>
-                                <label class="form-check-label" for="tipo-agua">
-                                    Agua
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" value="aire" type="radio" name="tipo"
-                                    id="tipo-aire" required>
-                                <label class="form-check-label" for="tipo-aire">
-                                    Aire
-                                </label>
+                            <div id="check_tipo">
+
+                                <label class="mb-3 me-3">Tipo de dragon: </label>
+
                             </div>
                             <div class="my-4"></div>
                             <div>
@@ -75,6 +58,7 @@
                                 <input type="text" class="form-control" name="imagen" placeholder="Ingrese link" id="imagen" required>
                             </div>
                             <div class="my-4"></div>
+                            <h5 id="precio">Precio: 0</h5>
                             <button type="submit" class="btn btn-success">Crear</button>
                             <a class="btn btn-secondary" href="../">Volver</a>
                         </form>
@@ -106,37 +90,50 @@
             console.log(error);
         }
 
-        function seleccionar_tipo(id) {
-            let nombre = document.getElementById('name').value;
-            console.log(id, nombre);
+        function dragon_creado(content) {
+            console.log(content)
+            actualizar_comida();
         }
 
-        function parse_data(content) {
-            tipos_dragon = content['tipos_dragon'];
+        function actualizar_precio(precio) {
+            h5_precio = document.getElementById("precio");
+            h5_precio.innerText = `Precio: ${precio}`;
+        }
+
+        function cargar_dragones(content) {
+            let tipos_dragon = content['tipos_dragon'];
+
+            let check_tipo = document.getElementById("check_tipo");
 
             tipos_dragon.forEach(tipo_dragon => {
-                let button_tipo_dragon = document.createElement("button");
-                button_tipo_dragon.setAttribute("onclick", `seleccionar_tipo(${tipo_dragon['id']})`)
+                let div_tipo = document.createElement("div");
+                div_tipo.setAttribute("class", "form-check form-check-inline")
+                div_tipo.innerHTML = `
+                <input class="form-check-input" onclick="actualizar_precio(${tipo_dragon['precio']})" value="${tipo_dragon['id']}" type="radio" name="tipo" id="check-${tipo_dragon['id']}" required>
+                <label class="form-check-label" for="check-${tipo_dragon['id']}"> ${tipo_dragon['nombre'].charAt(0).toUpperCase() + tipo_dragon['nombre'].slice(1)} </label>
+                `;
 
-                let p_nombre = document.createElement("p");
-                p_nombre.innerText = tipo_dragon['nombre']
-                let p_precio = document.createElement("p");
-                p_precio.innerText = tipo_dragon['precio']
-
-                button_tipo_dragon.appendChild(p_nombre);
-                button_tipo_dragon.appendChild(p_precio);
-
-                document.body.appendChild(button_tipo_dragon)
-
-                console.log(tipo_dragon)
+                check_tipo.appendChild(div_tipo);
             });
         }
 
         function cargar_comida(content) {
             cantidad_comida = content['comida'];
-    
+            //console.log(content);
+
             h5_comida = document.getElementById("tu_comida");
             h5_comida.innerText = `Tu comida: ${cantidad_comida}`;
+        }
+
+        function crear_dragon(event) {
+            event.preventDefault();
+            let id_tipo = document.querySelector('input[name="tipo"]:checked').value;
+            let nombre = document.getElementById("name").value;
+            console.log(id_tipo, nombre);
+            fetch(`${URL_API}/nuevo_dragon?id_tipo=${id_tipo}&nombre=${nombre}`, {method: "POST"})
+                .then(response_received)
+                .then(dragon_creado)
+                .catch(request_error)
         }
 
         function actualizar_comida() {
@@ -146,9 +143,9 @@
                 .catch(request_error)
         }
 
-        fetch("http://192.168.1.62:5000/tipos_dragon")
+        fetch(`${URL_API}/tipos_dragon`)
             .then(response_received)
-            .then(parse_data)
+            .then(cargar_dragones)
             .catch(request_error)
 
         actualizar_comida()
