@@ -24,70 +24,8 @@
 
     <div class="container text-center">
         <div class="row row-cols-auto" id="dragones">
-          
-            <div class="border rounded py-3 px-4 mb-2 mx-1">
-
-                <div id="3" class="col">
-                    <div class="row">
-                        <img class="img-thumbnail" src="../assets/fuego.png" style="height:200px">
-                    </div>
-                    <div class="row">
-                        <h5 class="mt-2">Carlos</h5>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5>Hambre</h5>
-                        </div>
-                        <div class="col">
-                            <h5>valor</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5>Salud</h5>
-                        </div>
-                        <div class="col">
-                            <h5>valor</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <button class="btn btn-success d-block p-3">alimentar</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="border rounded py-3 px-4 mb-2 mx-1">
-
-                <div id="3" class="col">
-                    <div class="row">
-                        <img class="img-thumbnail" src="../assets/fuego.png" style="height:200px">
-                    </div>
-                    <div class="row">
-                        <h5 class="mt-2">Carlos</h5>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5>Hambre</h5>
-                        </div>
-                        <div class="col">
-                            <h5>valor</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5>Salud</h5>
-                        </div>
-                        <div class="col">
-                            <h5>valor</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <button class="btn btn-success d-block p-3">alimentar</button>
-                    </div>
-                </div>
-            </div>
+            
         </div>
-
     </div>
 
     <script>
@@ -102,6 +40,20 @@
         console.log(error);
     }
 
+    function dragon_alimentado(content) {
+        let dragon = content['dragon'];
+        console.log(content);
+        actualizar_comida();
+        document.getElementById(`${dragon['id']}-hambre`).innerText = dragon['hambre'];
+    }
+
+    function alimentar(id) {
+        let cantidad_comida = document.getElementById(`${id}-cantidad-comida`).value;
+        fetch(`${URL_API}/alimentar/${id}?cantidad_comida=${cantidad_comida}`, {method: "POST"})
+            .then(response_received)
+            .then(dragon_alimentado)
+            .catch(request_error)
+    }
 
     function cargar_dragones(content) {
         dragones = content['dragones'];
@@ -112,40 +64,52 @@
 
             let imagen_dragon =  `../assets/${dragon['tipo_dragon']}.png`
 
-            let div_dragon = document.createElement("div");
-            div_dragon.id = dragon['id'];
-            div_dragon.setAttribute("class", "col");
+            let div_dragon = document.createElement("div")
+            div_dragon.setAttribute("class", "border rounded py-3 px-4 mb-2 mx-1");
+            div_dragon.innerHTML = `
+                <div id="${dragon['id']}" class="col">
+                    <div class="row">
+                        <img class="img-thumbnail mx-auto" src="../assets/${dragon['tipo_dragon']}.png" style="max-width: 200px; max-height: 200px;">
+                    </div>
+                    <div class="row">
+                        <h5 class="mt-2">${dragon['nombre']}</h5>
+                    </div>
 
+                    <div class="row">
+                        <div class="col">
+                            <h5>Tipo</h5>
+                        </div>
+                        <div class="col">
+                            <h5>${dragon['tipo_dragon'].charAt(0).toUpperCase() + dragon['tipo_dragon'].slice(1)}</h5>
+                        </div>
+                    </div>
 
-            let div_row_img = document.createElement("div");
-            div_row_img.setAttribute("class", "row");
-            let div_col_img = document.createElement("div");
-            div_col_img.setAttribute("class", "col");
-            let img = document.createElement("img");
-            img.setAttribute("class", "img-thumbnail");
-            img.setAttribute("src", imagen_dragon);
-            img.setAttribute("style", "height:200px");
-
-            div_col_img.appendChild(img);
-            div_row_img.appendChild(div_col_img);
-            div_dragon.appendChild(div_row_img);
-
-            let div_row_info = document.createElement("div");
-            div_row_info.setAttribute("class", "row");
-
-            let div_col_info = document.createElement("div");
-            div_col_info.setAttribute("class", "col");
-
-            let h5_nombre = document.createElement("h5");
-            h5_nombre.innerText = dragon['nombre'];
-
-            let div_hambre = 
-
-            div_col_info.appendChild(h5_nombre);
-            div_row_info.appendChild(div_col_info);
-            div_dragon.appendChild(div_row_info);
-
-            //div_dragon.innerText = `${dragon['nombre']} | tipo: ${dragon['tipo_dragon']} | hambre: ${dragon['hambre']} | salud: ${dragon['salud']}`;
+                    <div class="row">
+                        <div class="col">
+                            <h5>Hambre</h5>
+                        </div>
+                        <div class="col">
+                            <h5 id="${dragon['id']}-hambre">${dragon['hambre']}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h5>Salud</h5>
+                        </div>
+                        <div class="col">
+                            <h5>${dragon['salud']}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                    </div>
+                    <div class="row mb-1">
+                        <input id="${dragon['id']}-cantidad-comida" type="number" id="typeNumber" class="form-control py-3"/>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-success d-block py-3" onclick="alimentar(${dragon['id']})">Alimentar</button>
+                    </div>
+                </div>
+            `;
             div_dragones.appendChild(div_dragon);
     });
     }
