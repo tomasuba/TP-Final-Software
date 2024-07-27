@@ -50,7 +50,7 @@
 
         function cosechar(id) {
             console.log(id);
-            fetch(`${URL_API}/cosechar/${id}`, {method: "POST"})
+            fetch(`${URL_API}/cosechar/${id}`, {method: "PUT"})
                 .then(response_received)
                 .then(granja_cosechada)
                 .catch(request_error)

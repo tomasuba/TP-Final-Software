@@ -298,7 +298,7 @@ def add_granjas():
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
 
-@app.route("/cosechar/<id_granja>", methods=['POST'])
+@app.route("/cosechar/<id_granja>", methods=['PUT'])
 def cosechar_granja(id_granja):
     try:
         if not id_granja:
