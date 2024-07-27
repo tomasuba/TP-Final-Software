@@ -86,7 +86,7 @@
       tipos_granja.forEach(tipo_granja => {
         let option = document.createElement("option");
         option.value = tipo_granja['id'];
-        option.innerText = `${tipo_granja['nombre']} | precio: ${tipo_granja['precio']} | recompensa: ${tipo_granja['recompensa']}`;
+        option.innerText = `${tipo_granja['nombre']} | precio: ${tipo_granja['precio']} | recompensa: ${tipo_granja['recompensa']} | tiempo: ${tipo_granja['tiempo_cosecha']} minutos`;
         select.appendChild(option);
       });
     }
