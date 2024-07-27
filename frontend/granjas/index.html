@@ -24,6 +24,7 @@
 
     <div class="container text-center">
         <div class="row row-cols-auto" id="granjas">
+            
           
         </div>
     </div>
@@ -40,16 +41,29 @@
             console.log(error);
         }
 
+        function granja_eliminada(content) {
+            console.log(content);
+            let granja = content['granja']
+            actualizar_comida();
+            document.getElementById(granja['id']).remove();
+        }
+
+        function eliminar_granja(id) {
+            console.log(id);
+            fetch(`${URL_API}/eliminar_granja/${id}`, {method: "DELETE"})
+                .then(response_received)
+                .then(granja_eliminada)
+                .catch(request_error)
+        }
+
         function granja_cosechada(content){
             console.log(content);
             let granja = content['granja']
-            console.log(granja['id']);
             actualizar_comida();
             document.getElementById(granja['id']).remove();
         }
 
         function cosechar(id) {
-            console.log(id);
             fetch(`${URL_API}/cosechar/${id}`, {method: "PUT"})
                 .then(response_received)
                 .then(granja_cosechada)
@@ -66,51 +80,33 @@
                     return true;
                 }
 
-                let texto_btn = `Cosechar\n+${granja['recompensa']}`;
-                let imagen_granja = "../assets/granja.png";
-                let imagen_info = `../assets/${granja['tipo_granja']}.png`
-
                 let div_granja = document.createElement("div");
                 div_granja.setAttribute("class", "col");
                 div_granja.setAttribute("id", granja['id'])
-                let div_col = document.createElement("div");
-                div_col.setAttribute("class", "col");
 
-                let div_row_img = document.createElement("div");
-                div_row_img.setAttribute("class", "row");
-                let div_col_img = document.createElement("div");
-                div_col_img.setAttribute("class", "col");
-
-                let div_row_info = document.createElement("div");
-                div_row_info.setAttribute("class", "row");
-                let div_col_info_img = document.createElement("div");
-                div_col_info_img.setAttribute("class", "col");
-                let div_col_info_btn = document.createElement("div");
-                div_col_info_btn.setAttribute("class", "col");
-
-                let img = document.createElement("img");
-                img.setAttribute("src", imagen_granja);
-                img.setAttribute("class", "img-thumbnail");
-                img.setAttribute("style", "height:210px");
-                div_col_img.appendChild(img);
-                div_row_img.appendChild(div_col_img);
-                div_granja.appendChild(div_row_img);
-
-                let img_info = document.createElement("img");
-                img_info.setAttribute("src", imagen_info);
-                img_info.setAttribute("class", "img");
-                img_info.setAttribute("style", "height: 5em;");
-                div_col_info_img.append(img_info);
-                div_row_info.append(div_col_info_img)
-
-                let btn_info = document.createElement("btn");
-                btn_info.setAttribute("class", "btn btn-success d-block m-1 p-3");
-                btn_info.setAttribute("onclick", `cosechar(${granja['id']})`)
-                btn_info.innerText = texto_btn;
-                div_col_info_btn.append(btn_info);
-                div_row_info.append(div_col_info_btn);
-
-                div_granja.appendChild(div_row_info);
+                div_granja.innerHTML = `
+                    <div class="col" id="${granja['id']}">
+                        <div class="row">
+                            <div class="col">
+                                <img src="../assets/granja.png" class="img-thumbnail" style="height:210px">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <img src="../assets/${granja['tipo_granja']}.png" class="img" style="height: 5em;">
+                            </div>
+                            <div class="col">
+                                <btn class="btn btn-success d-block mx-1 mt-1 p-3" onclick="cosechar(${granja['id']})">Cosechar<br>+${granja['recompensa']}</btn>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <btn class="btn btn-danger d-block m-1" onclick="eliminar_granja(${granja['id']})">Eliminar<br>+${granja['precio']}</btn>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
                 div_granjas.appendChild(div_granja);
         });
         }
