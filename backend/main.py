@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from models import db, Dragones, TiposDragon, Granjas, TiposGranja, Almacen
 from apscheduler.schedulers.background import BackgroundScheduler
-import datetime
+import time
 import atexit
 
 USUARIO = 'tomascrojo'
@@ -20,7 +20,7 @@ def actualizar():
             dragones = db.session.query(Dragones).where(Dragones.salud > 0).all()
             for dragon in dragones:
 
-                tiempo_desde_actualizacion = datetime.datetime.now() - dragon.ultima_actualizacion
+                tiempo_desde_actualizacion = int(time.time()) - dragon.ultima_actualizacion
                 minutos_desde_actualizacion = tiempo_desde_actualizacion.total_seconds()//60
 
                 if minutos_desde_actualizacion <= 0:
@@ -36,7 +36,7 @@ def actualizar():
                     comida_a_restar = 0
 
                 dragon.salud -= comida_a_restar
-                dragon.ultima_actualizacion += datetime.timedelta(minutes=minutos_desde_actualizacion)
+                dragon.ultima_actualizacion += (minutos_desde_actualizacion * 60)
 
             db.session.commit()
 
@@ -217,7 +217,7 @@ def add_dragones():
 
         almacen.comida -= tipo_dragon.precio
         
-        fecha_creacion = datetime.datetime.now()
+        fecha_creacion = int(time.time())
         
         nuevo_dragon = Dragones(id_tipo=id_tipo, nombre=nombre, fecha_creacion=fecha_creacion, ultima_actualizacion=fecha_creacion)
         db.session.add(nuevo_dragon)
@@ -285,8 +285,8 @@ def add_granjas():
         
         almacen.comida -= tipo_granja.precio
 
-        fecha_creacion = datetime.datetime.now()
-        fecha_cosecha = fecha_creacion + datetime.timedelta(minutes=tipo_granja.tiempo_cosecha)
+        fecha_creacion = int(time.time())
+        fecha_cosecha = fecha_creacion + (tipo_granja.tiempo_cosecha * 60)
         
         nueva_granja = Granjas(id_tipo=id_tipo, fecha_creacion=fecha_creacion, fecha_cosecha=fecha_cosecha)
         db.session.add(nueva_granja)
@@ -317,7 +317,7 @@ def cosechar_granja(id_granja):
         if granja.cosechada:
             return jsonify({'message': f'Granja ya cosechada'}), 400 
 
-        if datetime.datetime.now() < granja.fecha_cosecha:
+        if int(time.time()) < granja.fecha_cosecha:
             return jsonify({'message': f'Granja no lista para cosecha'}), 400
         
         if not almacen:
