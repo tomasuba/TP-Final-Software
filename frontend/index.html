@@ -16,8 +16,27 @@
             <div class="col">
                 <h1>Dragones & Camejos</h1>
                 <h5 id="tu_comida">Tu comida: </h5>
-                <a href="dragones/" class="btn btn-primary d-block mb-3">Dragones</a>
-                <a href="granjas/" class="btn btn-primary d-block mb-3">Granjas</a>
+                <div class="container">
+                    <div class="row">
+                      <div class="col-sm border rounded">
+                        <a href="granjas/" class="btn btn-primary d-block m-3">Granjas</a>
+                        <h6 class="text-center">Granjas listas para cosechar</h6>
+                        <div class="row p-1" id="granjas_para_cosechar">
+                            
+
+                        </div>
+                      </div>
+                      <div class="col-sm border rounded">
+                        <a href="dragones/" class="btn btn-primary d-block m-3">Dragones</a>
+                        <h6 class="text-center">Dragones hambrientos:</h6>
+                        <div class="row p-1" id="dragones_hambrientos">
+                            
+                            
+
+                        </div>
+                      </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -26,6 +45,104 @@
         <div class="row g-4" id="dragones">
         </div>
     </div>
+
+    <script>
+
+        const URL_API = "http://192.168.0.243:5000"
+        
+        function response_received(response) {
+            return response.json();
+        }
+        function request_error(error) {
+            console.log("ERROR");
+            console.log(error);
+        }
+
+        function cargar_dragones(content) {
+
+            let dragones = content['dragones'];
+
+            let div_dragones_hambrientos = document.getElementById("dragones_hambrientos");
+
+            dragones.forEach(dragon => {
+
+                if (dragon['salud'] <= 0) {
+                    return true;
+                }
+                if (dragon['hambre'] > 30) {
+                    return true;
+                }
+
+                let div_dragon = document.createElement("div")
+                div_dragon.setAttribute("class", "col text-center border rounded m-2");
+                div_dragon.setAttribute("style", "max-width: 8em;");
+                div_dragon.innerHTML = `
+                    <img src="assets/${dragon['tipo_dragon']}.png" class="mx-auto d-block" height="100px" alt="">
+                    <h6 class="mt-2">${dragon['nombre']}</h6>
+                    <p>Hambre: ${dragon['hambre']}</p>
+                `;
+                div_dragones_hambrientos.appendChild(div_dragon);
+            });
+        }
+
+        function cargar_granjas(content) {
+            let granjas = content['granjas'];
+
+            let div_granjas = document.getElementById("granjas_para_cosechar");
+
+            granjas.forEach(granja => {
+
+                if (granja['cosechada']) {
+                    return true;
+                }
+                if (granja['fecha_cosecha'] * 1000 > Date.now()) {
+                    return true;
+                }
+    
+                console.log(granja['fecha_cosecha'] * 1000, Date.now());
+
+                console.log(granja);
+
+                let div_granja = document.createElement("div");
+                div_granja.setAttribute("class", "col text-center border rounded m-2");
+                div_granja.setAttribute("style", "max-width: 8em;");
+                div_granja.innerHTML = `
+                    <img src="assets/granja.png" class="mx-auto d-block" height="100px" alt="">
+                    <img src="assets/${granja['tipo_granja']}.png" class="mx-auto mb-1" height="50px" alt="">
+                `;
+
+
+                div_granjas.appendChild(div_granja);
+            });
+        }
+        
+        function cargar_comida(content) {
+            cantidad_comida = content['comida'];
+            
+            h5_comida = document.getElementById("tu_comida");
+            h5_comida.innerText = `Tu comida: ${cantidad_comida}`;
+        }
+        
+        function actualizar_comida() {
+            fetch(`${URL_API}/almacen`)
+            .then(response_received)
+            .then(cargar_comida)
+            .catch(request_error)
+        }
+        
+        fetch(`${URL_API}/granjas`)
+            .then(response_received)
+            .then(cargar_granjas)
+            .catch(request_error)
+
+        fetch(`${URL_API}/dragones`)
+            .then(response_received)
+            .then(cargar_dragones)
+            .catch(request_error)
+
+        actualizar_comida()
+    </script>
+
 </body>
 
 </html>
