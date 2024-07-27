@@ -341,12 +341,16 @@ def eliminar_granja(id_granja):
         data = db.session.query(Granjas, TiposGranja
         ).where(Granjas.id_tipo==TiposGranja.id).where(Granjas.id==id_granja).first()
         
-        granja, tipo_granja = data
-        almacen = db.session.query(Almacen).first()
-
         if not data:
             return jsonify({'message': 'Granja not found'}), 404
         
+        granja, tipo_granja = data
+
+        if granja.cosechada:
+            return jsonify({'message': f'Granja ya cosechada'}), 400 
+
+        almacen = db.session.query(Almacen).first()
+
         if not almacen:
             return jsonify({'message': 'Almacen not found'}), 404
         

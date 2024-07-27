@@ -49,7 +49,6 @@
         }
 
         function eliminar_granja(id) {
-            console.log(id);
             fetch(`${URL_API}/eliminar_granja/${id}`, {method: "DELETE"})
                 .then(response_received)
                 .then(granja_eliminada)
