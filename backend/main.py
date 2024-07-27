@@ -21,7 +21,7 @@ def actualizar():
             for dragon in dragones:
 
                 tiempo_desde_actualizacion = int(time.time()) - dragon.ultima_actualizacion
-                minutos_desde_actualizacion = tiempo_desde_actualizacion.total_seconds()//60
+                minutos_desde_actualizacion = tiempo_desde_actualizacion//60
 
                 if minutos_desde_actualizacion <= 0:
                     pass
