@@ -61,7 +61,7 @@ def get_almacen():
             'id' : almacen.id,
             'comida': almacen.comida
         }
-        return jsonify(almacen_data)
+        return jsonify(almacen_data), 200
     except Exception as error:
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
@@ -84,7 +84,7 @@ def get_dragones():
                 'ultima_actualizacion': dragon.ultima_actualizacion
             }
             dragones_data.append(dragon_data)
-        return jsonify({'dragones':dragones_data})
+        return jsonify({'dragones':dragones_data}), 200
     except Exception as error:
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
@@ -109,7 +109,7 @@ def get_dragon(id_dragon):
             'hambre': dragon.hambre,
             'ultima_actualizacion': dragon.ultima_actualizacion
         }
-        return jsonify(dragon_data)
+        return jsonify(dragon_data), 200
     except Exception as error:
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
@@ -127,7 +127,7 @@ def get_tipos_dragon():
                 'precio': tipo_dragon.precio,
             }
             tipos_dragon_data.append(tipo_dragon_data)
-        return jsonify({'tipos_dragon':tipos_dragon_data})
+        return jsonify({'tipos_dragon':tipos_dragon_data}), 200
     except Exception as error:
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
@@ -150,7 +150,7 @@ def get_granjas():
                 'precio': tipo_granja.precio
             }
             granjas_data.append(granja_data)
-        return jsonify({'granjas':granjas_data})
+        return jsonify({'granjas':granjas_data}), 200
     except Exception as error:
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
@@ -173,7 +173,7 @@ def get_granja(id_granja):
             'fecha_cosecha': granja.fecha_cosecha,
             'cosechada': granja.cosechada
         }
-        return jsonify(granja_data)
+        return jsonify(granja_data), 200
     except Exception as error:
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
@@ -193,7 +193,7 @@ def get_tipos_granja():
                 'tiempo_cosecha': tipo_granja.tiempo_cosecha
             }
             tipos_granja_data.append(tipo_granja_data)
-        return jsonify({'tipos_granja':tipos_granja_data})
+        return jsonify({'tipos_granja':tipos_granja_data}), 200
     except Exception as error:
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
@@ -225,42 +225,6 @@ def add_dragones():
         db.session.commit()
 
         return jsonify({'dragon': {'id': nuevo_dragon.id, 'id_tipo': nuevo_dragon.id_tipo, 'fecha_creacion': nuevo_dragon.fecha_creacion, 'nombre': nuevo_dragon.nombre, 'salud': nuevo_dragon.salud, 'hambre': nuevo_dragon.hambre, 'ultima_actualizacion': nuevo_dragon.ultima_actualizacion}}), 201
-    
-    
-    except Exception as error:
-        print("Error", error)
-        return jsonify({'message': 'Internal server error'}), 500
-
-@app.route("/alimentar/<id_dragon>", methods=['POST'])
-def alimentar(id_dragon):
-    try:
-        str_cantidad_comida = request.args.get('cantidad_comida')
-        dragon = db.session.query(Dragones).get(id_dragon)
-        almacen = db.session.query(Almacen).first()
-
-        if not dragon:
-            return jsonify({'message': 'Dragon not found'}), 404
-        
-        if not str_cantidad_comida:
-            return jsonify({'message': 'Bad request, cantidad_comida not provided'}), 400
-        
-        if not str_cantidad_comida.isnumeric():
-            return jsonify({'message': f'Bad request, cantidad_comida debe ser un numero'}), 400
-        
-        cantidad_comida = int(str_cantidad_comida)
-
-        if cantidad_comida <= 0:
-            return jsonify({'message': f'cantidad_comida debe ser mayor a 0'}), 400
-
-        if almacen.comida < cantidad_comida:
-            return jsonify({'message': f'Comida insuficiente'}), 400
-
-        almacen.comida -= cantidad_comida
-        dragon.hambre += cantidad_comida
-        
-        db.session.commit()
-
-        return jsonify({'dragon': {'id': dragon.id, 'id_tipo': dragon.id_tipo, 'fecha_creacion': dragon.fecha_creacion, 'nombre': dragon.nombre, 'salud': dragon.salud, 'hambre': dragon.hambre, 'ultima_actualizacion': dragon.ultima_actualizacion}}), 201
     
     
     except Exception as error:
@@ -299,6 +263,42 @@ def add_granjas():
         print("Error", error)
         return jsonify({'message': 'Internal server error'}), 500
 
+@app.route("/alimentar/<id_dragon>", methods=['PUT'])
+def alimentar(id_dragon):
+    try:
+        str_cantidad_comida = request.args.get('cantidad_comida')
+        dragon = db.session.query(Dragones).get(id_dragon)
+        almacen = db.session.query(Almacen).first()
+
+        if not dragon:
+            return jsonify({'message': 'Dragon not found'}), 404
+        
+        if not str_cantidad_comida:
+            return jsonify({'message': 'Bad request, cantidad_comida not provided'}), 400
+        
+        if not str_cantidad_comida.isnumeric():
+            return jsonify({'message': f'Bad request, cantidad_comida debe ser un numero'}), 400
+        
+        cantidad_comida = int(str_cantidad_comida)
+
+        if cantidad_comida <= 0:
+            return jsonify({'message': f'cantidad_comida debe ser mayor a 0'}), 400
+
+        if almacen.comida < cantidad_comida:
+            return jsonify({'message': f'Comida insuficiente'}), 400
+
+        almacen.comida -= cantidad_comida
+        dragon.hambre += cantidad_comida
+        
+        db.session.commit()
+
+        return jsonify({'dragon': {'id': dragon.id, 'id_tipo': dragon.id_tipo, 'fecha_creacion': dragon.fecha_creacion, 'nombre': dragon.nombre, 'salud': dragon.salud, 'hambre': dragon.hambre, 'ultima_actualizacion': dragon.ultima_actualizacion}}), 200
+    
+    
+    except Exception as error:
+        print("Error", error)
+        return jsonify({'message': 'Internal server error'}), 500
+
 @app.route("/cosechar/<id_granja>", methods=['PUT'])
 def cosechar_granja(id_granja):
     try:
@@ -329,7 +329,33 @@ def cosechar_granja(id_granja):
 
         db.session.commit()
 
-        return jsonify({'granja': {'id': granja.id, 'id_tipo': granja.id_tipo, 'fecha_creacion': granja.fecha_creacion, 'fecha_cosecha': granja.fecha_cosecha, 'cosechada': granja.cosechada}}), 201
+        return jsonify({'granja': {'id': granja.id, 'id_tipo': granja.id_tipo, 'fecha_creacion': granja.fecha_creacion, 'fecha_cosecha': granja.fecha_cosecha, 'cosechada': granja.cosechada}}), 200
+    
+    except Exception as error:
+        print("Error", error)
+        return jsonify({'message': 'Internal server error'}), 500
+
+@app.route("/eliminar_granja/<id_granja>", methods=['DELETE'])
+def eliminar_granja(id_granja):
+    try:
+        data = db.session.query(Granjas, TiposGranja
+        ).where(Granjas.id_tipo==TiposGranja.id).where(Granjas.id==id_granja).first()
+        
+        granja, tipo_granja = data
+        almacen = db.session.query(Almacen).first()
+
+        if not data:
+            return jsonify({'message': 'Granja not found'}), 404
+        
+        if not almacen:
+            return jsonify({'message': 'Almacen not found'}), 404
+        
+        almacen.comida += tipo_granja.precio
+
+        db.session.delete(granja)
+        db.session.commit()
+
+        return jsonify({'granja': {'id': granja.id, 'id_tipo': granja.id_tipo, 'fecha_creacion': granja.fecha_creacion, 'fecha_cosecha': granja.fecha_cosecha, 'cosechada': granja.cosechada}}), 200
     
     except Exception as error:
         print("Error", error)

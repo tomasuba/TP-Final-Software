@@ -49,7 +49,7 @@
 
     function alimentar(id) {
         let cantidad_comida = document.getElementById(`${id}-cantidad-comida`).value;
-        fetch(`${URL_API}/alimentar/${id}?cantidad_comida=${cantidad_comida}`, {method: "POST"})
+        fetch(`${URL_API}/alimentar/${id}?cantidad_comida=${cantidad_comida}`, {method: "PUT"})
             .then(response_received)
             .then(dragon_alimentado)
             .catch(request_error)
