@@ -30,7 +30,7 @@
 
     <script>
         
-    const URL_API = "http://192.168.0.243:5000"
+    const URL_API = "http://10.0.2.15:5000"
 
     function response_received(response) {
         return response.json();
@@ -61,57 +61,58 @@
         let div_dragones = document.getElementById("dragones");
 
         dragones.forEach(dragon => {
+            if (dragon['salud'] > 0) {
+                let imagen_dragon =  `../assets/${dragon['tipo_dragon']}.png`
 
-            let imagen_dragon =  `../assets/${dragon['tipo_dragon']}.png`
+                let div_dragon = document.createElement("div")
+                div_dragon.setAttribute("class", "border rounded py-3 px-4 mb-2 mx-1");
+                div_dragon.innerHTML = `
+                    <div id="${dragon['id']}" class="col">
+                        <div class="row">
+                            <img class="img-thumbnail mx-auto" src="../assets/${dragon['tipo_dragon']}.png" style="max-width: 200px; max-height: 200px;">
+                        </div>
+                        <div class="row">
+                            <h5 class="mt-2">${dragon['nombre']}</h5>
+                        </div>
 
-            let div_dragon = document.createElement("div")
-            div_dragon.setAttribute("class", "border rounded py-3 px-4 mb-2 mx-1");
-            div_dragon.innerHTML = `
-                <div id="${dragon['id']}" class="col">
-                    <div class="row">
-                        <img class="img-thumbnail mx-auto" src="../assets/${dragon['tipo_dragon']}.png" style="max-width: 200px; max-height: 200px;">
-                    </div>
-                    <div class="row">
-                        <h5 class="mt-2">${dragon['nombre']}</h5>
-                    </div>
+                        <div class="row">
+                            <div class="col">
+                                <h5>Tipo</h5>
+                            </div>
+                            <div class="col">
+                                <h5>${dragon['tipo_dragon'].charAt(0).toUpperCase() + dragon['tipo_dragon'].slice(1)}</h5>
+                            </div>
+                        </div>
 
-                    <div class="row">
-                        <div class="col">
-                            <h5>Tipo</h5>
+                        <div class="row">
+                            <div class="col">
+                                <h5>Hambre</h5>
+                            </div>
+                            <div class="col">
+                                <h5 id="${dragon['id']}-hambre">${dragon['hambre']}</h5>
+                            </div>
                         </div>
-                        <div class="col">
-                            <h5>${dragon['tipo_dragon'].charAt(0).toUpperCase() + dragon['tipo_dragon'].slice(1)}</h5>
+                        <div class="row">
+                            <div class="col">
+                                <h5>Salud</h5>
+                            </div>
+                            <div class="col">
+                                <h5>${dragon['salud']}</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                        <div class="row mb-1">
+                            <input id="${dragon['id']}-cantidad-comida" type="number" id="typeNumber" class="form-control py-3"/>
+                        </div>
+                        <div class="row">
+                            <button class="btn btn-success d-block py-3" onclick="alimentar(${dragon['id']})">Alimentar</button>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <h5>Hambre</h5>
-                        </div>
-                        <div class="col">
-                            <h5 id="${dragon['id']}-hambre">${dragon['hambre']}</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5>Salud</h5>
-                        </div>
-                        <div class="col">
-                            <h5>${dragon['salud']}</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                    </div>
-                    <div class="row mb-1">
-                        <input id="${dragon['id']}-cantidad-comida" type="number" id="typeNumber" class="form-control py-3"/>
-                    </div>
-                    <div class="row">
-                        <button class="btn btn-success d-block py-3" onclick="alimentar(${dragon['id']})">Alimentar</button>
-                    </div>
-                </div>
-            `;
-            div_dragones.appendChild(div_dragon);
-    });
+                `;
+                div_dragones.appendChild(div_dragon);
+            }
+        });
     }
 
     function cargar_comida(content) {

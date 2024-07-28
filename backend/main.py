@@ -5,8 +5,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import time
 import atexit
 
-USUARIO = 'tomascrojo'
-PASSWORD = '15012004'
+USUARIO = 'postgres'
+PASSWORD = '9393'
 
 app = Flask(__name__)
 CORS(app)
