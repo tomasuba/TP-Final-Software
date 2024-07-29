@@ -30,7 +30,7 @@
     </div>
 
     <script>
-        const URL_API = "http://10.0.2.15:5000";
+        const URL_API = "http://192.168.0.157:5000";
 
         function response_received(response) {
             return response.json();
@@ -103,6 +103,11 @@
             let div_granjas = document.getElementById("granjas");
 
             granjas.forEach(granja => {
+
+                if (granja['cosechada']) {
+                    return true;
+                }
+
                 let div_granja = document.createElement("div");
                 div_granja.setAttribute("class", "col");
                 div_granja.setAttribute("id", granja['id']);
