@@ -26,6 +26,7 @@
     <div class="container text-center">
         <div class="row row-cols-auto" id="granjas">
 
+
         </div>
     </div>
 
@@ -41,32 +42,30 @@
             console.log(error);
         }
 
-        function mostrar_tiempo_resto(id, tiempo_resto) {
-            const div_granja = document.getElementById(id);
-            const tiempo_resto_div = div_granja.querySelector('.tiempo-resto');
-            if (tiempo_resto_div) {
-                tiempo_resto_div.innerText = `Tiempo restante: ${tiempo_resto} minutos`;
-            } else {
-                const new_div = document.createElement('div');
-                new_div.className = 'tiempo-resto';
-                new_div.innerText = `Tiempo restante: ${tiempo_resto} minutos`;
-                div_granja.appendChild(new_div);
-            }
-        }
+        function actualizar_contadores() {
+            let btns_contadores = document.getElementsByClassName("contador");
+            Array.prototype.forEach.call(btns_contadores, function(btn_contador) {
+                let segundos_totales_restantes = btn_contador.getAttribute("contador_hasta") - Math.floor(Date.now()/1000);
 
-        function actualizar_tiempo_resto(cosecha) {
-            const ahora = Date.now();
-            cosecha.forEach(granja => {
-                if (granja['cosechada'] === false) {
-                    const tiempo_resto = Math.max(0, Math.ceil((granja['tiempo_cosecha'] - (ahora - granja['inicio'])) / 60000));
-                    mostrar_tiempo_resto(granja['id'], tiempo_resto);
-                    if (tiempo_resto <= 0) {
-                        document.querySelector(`#${granja['id']} .btn-cosechar`).disabled = false;
-                        mostrar_tiempo_resto(granja['id'], "¡Listo para cosechar!");
-                    } else {
-                        document.querySelector(`#${granja['id']} .btn-cosechar`).disabled = true;
-                    }
+                if (segundos_totales_restantes <= 0) {
+                    btn_contador.classList.remove("contador");
+                    btn_contador.innerText = `Cosechar\n+${btn_contador.getAttribute("recompensa")}`;
+                    let id = btn_contador.getAttribute("id").slice(4);
+                    btn_contador.setAttribute("onclick", `cosechar(${id})`);
+
+                    return true;
                 }
+
+                let segundos_restantes = segundos_totales_restantes % 60;
+                let minutos_totales_restantes = Math.floor(segundos_totales_restantes/60);
+                let minutos_restantes = minutos_totales_restantes % 60;
+                let horas_restantes = Math.floor(minutos_totales_restantes/60);
+
+                if (segundos_restantes < 10) { segundos_restantes = "0" + segundos_restantes}
+                if (minutos_restantes < 10) { minutos_restantes = "0" + minutos_restantes}
+
+                str_tiempo_restante = `${horas_restantes}:${minutos_restantes}:${segundos_restantes}`;
+                btn_contador.innerText = `Cosechar en\n${str_tiempo_restante}`;
             });
         }
 
@@ -122,24 +121,22 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-4">
                                 <img src="../assets/${granja['tipo_granja']}.png" class="img" style="height: 5em;">
                             </div>
                             <div class="col">
-                                <btn class="btn btn-success btn-cosechar d-block mx-1 mt-1 p-3" onclick="cosechar(${granja['id']})" ${btn_cosechar_disabled ? 'disabled' : ''}>Cosechar<br>+${granja['recompensa']}</btn>
+                                <btn class="btn btn-success btn-cosechar d-block mx-2 mt-1 px-2 py-3 contador" style="width:7em; height:5em;" contador_hasta="${granja['fecha_cosecha']}" recompensa="${granja['recompensa']}" id="btn-${granja['id']}" onclick="">Cosechar en <br>00:00:00</btn>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <btn class="btn btn-danger d-block m-1" onclick="eliminar_granja(${granja['id']})">Eliminar<br>+${granja['precio']}</btn>
+                                <btn class="btn btn-danger d-block my-1 mx-3" onclick="eliminar_granja(${granja['id']})">Eliminar<br>+${granja['precio']}</btn>
                             </div>
                         </div>
                     </div>
                 `;
                 div_granjas.appendChild(div_granja);
             });
-
-            actualizar_tiempo_resto(granjas);
         }
 
         function cargar_comida(content) {
@@ -161,6 +158,8 @@
             .catch(request_error);
 
         actualizar_comida();
+
+        const actualizador = setInterval(actualizar_contadores, 1000);
     </script>
 </body>
 
