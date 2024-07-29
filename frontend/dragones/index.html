@@ -61,32 +61,36 @@
         let div_dragones = document.getElementById("dragones");
 
         dragones.forEach(dragon => {
+
+            if (dragon['salud'] <= 0) {
+                return true;
+            }
             
             let imagen_dragon =  `../assets/${dragon['tipo_dragon']}.png`
 
             let div_dragon = document.createElement("div")
             div_dragon.setAttribute("class", "border rounded py-3 px-4 mb-2 mx-1");
             let color;
-                switch (dragon['tipo_dragon']) {
-                        case 'agua':
-                            color = '#26caff';
-                            break;
-                        case 'fuego':
-                            color = 'lightcoral';
-                            break;
-                        case 'metal':
-                            color = 'lightgray';
-                            break;
-                        case 'aire':
-                            color = 'white';
-                            break;
-                        case 'tierra':
-                            color = 'burlywood';
-                            break;
-                        default:
-                            color = 'white';
-                    }
-                div_dragon.setAttribute("style", `background:${color}; color: black`);
+            switch (dragon['tipo_dragon']) {
+                    case 'agua':
+                        color = '#26caff';
+                        break;
+                    case 'fuego':
+                        color = 'lightcoral';
+                        break;
+                    case 'metal':
+                        color = 'lightgray';
+                        break;
+                    case 'aire':
+                        color = 'white';
+                        break;
+                    case 'tierra':
+                        color = 'burlywood';
+                        break;
+                    default:
+                        color = 'white';
+                }
+            div_dragon.setAttribute("style", `background:${color}; color: black`);
             div_dragon.innerHTML = `
                 <div id="${dragon['id']}" class="col">
                     <div class="row">
